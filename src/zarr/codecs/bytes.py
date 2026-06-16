@@ -47,7 +47,7 @@ class BytesCodec(ArrayBytesCodec):
 
     endian: EndianLiteral | None
 
-    def __init__(self, *, endian: Endian | EndianLiteral | None = sys.byteorder) -> None:
+    def __init__(self, *, endian: Endian | EndianLiteral | None = None) -> None:
         if endian is None:
             endian_parsed: EndianLiteral | None = None
         else:
@@ -55,6 +55,11 @@ class BytesCodec(ArrayBytesCodec):
             endian_parsed = _parse_endian(coerced)
 
         object.__setattr__(self, "endian", endian_parsed)
+
+    @classmethod
+    def from_native(cls) -> Self:
+        """Use native system endianness."""
+        return cls(endian=sys.byteorder)
 
     @classmethod
     def from_dict(cls, data: dict[str, JSON]) -> Self:
